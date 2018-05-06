@@ -1,0 +1,18 @@
+body{
+  padding: 0px;
+  text-align: center;
+  background: #f2f6f8;
+}
+
+#container{
+    display:none;
+}
+
+canvas {
+  margin-top: 10vh;
+  margin-left: 15vw;
+  margin-right: 10vh;
+  margin-bottom: 20vw;
+  /*background: black;*/
+  outline: 1px solid white;
+}
