@@ -4,7 +4,9 @@ var canvas = document.getElementById("canvas"),
   ctx = canvas.getContext("2d"), // Create canvas context
   W = window.innerWidth, // Window's width
   H = window.innerHeight, // Window's height
-  keysDown = {},
+  score1 = 0, // Player scorecard
+  score2 = 0, // Computer scorecard
+  keysDown = {}, // Capture event keys
   player = new Player(), //Assign player to right paddle
   computer = new Computer(), //Assign computer player to left paddle
   ball = new Ball(150, 230); // Ball object
@@ -43,8 +45,8 @@ function gameState() {
     if (value == 13) { //Enter
       ball.x = 400;
       ball.y = 300;
-      ball.xSpeed = 3;
-      ball.ySpeed = Math.floor((Math.random() * 8) + -4);
+      ball.xSpeed = 4;
+      ball.ySpeed = Math.floor((Math.random() * 4) + -4);
     }
   }
 };
@@ -54,15 +56,15 @@ function Paddle(x, y, width, height) {
   this.y = y;
   this.width = width;
   this.height = height;
-  this.speed = 4;
+  this.speed = 2;
 };
 
 function Computer() {
-  this.paddle = new Paddle(370, 200, 4, 30);
+  this.paddle = new Paddle(374, 200, 6, 33);
 };
 
 function Player() {
-  this.paddle = new Paddle(68, 150, 4, 30);
+  this.paddle = new Paddle(37, 200, 6, 33);
 };
 
 function Ball(x, y) {
@@ -81,10 +83,10 @@ Paddle.prototype.render = function () {
 Paddle.prototype.move = function (x, y) {
   this.x += x;
   this.y += y;
-  if (this.y < 139) {
-    this.y = 139;
-  } else if (this.y + this.height > 329) {
-    this.y = 329 - this.height;
+  if (this.y < 172) {
+    this.y = 172;
+  } else if (this.y + this.height > 332) {
+    this.y = 332 - this.height;
   }
 };
 
@@ -129,14 +131,16 @@ Ball.prototype.update = function (paddle1, paddle2) {
   this.top = this.y + 4;
   this.bottom = this.y - 4;
 
-  if (this.top < 133) {
-    this.y = 133;
+  // ball hitting top and bottom
+  if (this.top < 176) {
+    this.y = 176;
     this.ySpeed = -this.ySpeed;
-  } else if (this.bottom > 312) {
-    this.y = 312;
+  } else if (this.bottom > 328) {
+    this.y = 328;
     this.ySpeed = -this.ySpeed;
   }
 
+  // ball hitting player paddle
   if (this.left > (paddle1.x - paddle1.width) && 
       this.left < (paddle1.x + paddle1.width) && 
      (this.top < (paddle1.y + paddle1.height) && 
@@ -146,6 +150,7 @@ Ball.prototype.update = function (paddle1, paddle2) {
     this.y > (paddle1.y + paddle1.height / 2) ? this.ySpeed += (paddle1.speed / 2) : this.ySpeed -= (paddle1.speed / 2);
   }
 
+  // ball hitting computer paddle
   if (this.right > (paddle2.x - paddle2.width) && 
       this.right < (paddle2.x + paddle2.width) && 
      (this.top < (paddle2.y + paddle2.height) && 
@@ -155,11 +160,14 @@ Ball.prototype.update = function (paddle1, paddle2) {
     this.y > (paddle2.y + paddle2.height / 2) ? this.ySpeed += (paddle2.speed / 2) : this.ySpeed -= (paddle2.speed / 2);
   }
 
-  if (this.x < 39 || this.x > 380) {
+  if (this.x < 33 || this.x > 384) {
+    this.x > 400 ? score1++ : score2++;
+    // verify ball can get past AI paddle
+    console.log("Player: " + score1 + " Computer: " + score2);
     this.x = 150;
     this.y = 230;
     this.xSpeed = 3;
-    this.ySpeed = Math.floor((Math.random() * 8) + -4);
+    this.ySpeed = Math.floor((Math.random() * 6) + -4);
   }
 };
 
@@ -168,28 +176,36 @@ var paintCanvas = function() {
   // Game image
   ctx.drawImage(image, 0, 0);
   // Gameboard
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "grey";
   ctx.beginPath();
-  ctx.moveTo(49, 138);
-  ctx.lineTo(381, 133);
-  ctx.lineTo(388, 312);
-  ctx.lineTo(62, 330);
+  ctx.moveTo(15, 139);
+  ctx.lineTo(394, 161);
+  ctx.lineTo(390, 343);
+  ctx.lineTo(25, 358);
   ctx.fill();
   // Net line
   ctx.setLineDash([3, 9]);
+  ctx.lineWidth = "10";
+  ctx.strokeStyle = "blue";
   ctx.beginPath();
-  ctx.moveTo(225, 138);
-  ctx.lineTo(235, 321);
-  ctx.strokeStyle = "grey";
+  ctx.moveTo(208, 166);
+  ctx.lineTo(208, 338);
   ctx.stroke();
   // Scoreboard
-  ctx.fillStyle = "white";
+  ctx.fillStyle = "grey";
   ctx.beginPath();
-  ctx.moveTo(403, 132);
-  ctx.lineTo(735, 119);
-  ctx.lineTo(734, 309);
-  ctx.lineTo(406, 310);
+  ctx.moveTo(419, 162);
+  ctx.lineTo(772, 150);
+  ctx.lineTo(767, 350);
+  ctx.lineTo(419, 340);
   ctx.fill();
+  // Pong table
+  ctx.beginPath();
+  ctx.setLineDash([]);
+  ctx.lineWidth="10";
+  ctx.strokeStyle="grey";
+  ctx.rect(31, 166, 355, 172);
+  ctx.stroke(); 
 };  
 
 // Start of program ***HERE***
