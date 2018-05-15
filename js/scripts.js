@@ -6,10 +6,13 @@ var canvas = document.getElementById("canvas"),
   H = window.innerHeight, // Window's height
   score1 = 0, // Player scorecard
   score2 = 0, // Computer scorecard
+  ping = new Audio('pong.wav'), // Ball hitting the paddle sound
   keysDown = {}, // Capture event keys
-  player = new Player(), //Assign player to right paddle
-  computer = new Computer(), //Assign computer player to left paddle
-  ball = new Ball(150, 230); // Ball object
+  player = new Player(), // Assign player to right paddle
+  computer = new Computer(), // Assign computer player to left paddle
+  startX = 130, // Starting ball position x-axis
+  startY = 210, // Starting ball position y-axis
+  ball = new Ball(startX, startY); // Ball object
 
 var render = function () {
   paintCanvas();
@@ -43,10 +46,10 @@ function gameState() {
   for (var key in keysDown) {
     var value = Number(key);
     if (value == 13) { //Enter
-      ball.x = 400;
-      ball.y = 300;
+      ball.x = startX;
+      ball.y = startY;
       ball.xSpeed = 4;
-      ball.ySpeed = Math.floor((Math.random() * 4) + -4);
+      ball.ySpeed = Math.floor((Math.random() * 5) + -4);
     }
   }
 };
@@ -148,6 +151,7 @@ Ball.prototype.update = function (paddle1, paddle2) {
     // then...
     this.xSpeed = -this.xSpeed;
     this.y > (paddle1.y + paddle1.height / 2) ? this.ySpeed += (paddle1.speed / 2) : this.ySpeed -= (paddle1.speed / 2);
+    ping.play();
   }
 
   // ball hitting computer paddle
@@ -158,14 +162,15 @@ Ball.prototype.update = function (paddle1, paddle2) {
     // then...
     this.xSpeed = -this.xSpeed;
     this.y > (paddle2.y + paddle2.height / 2) ? this.ySpeed += (paddle2.speed / 2) : this.ySpeed -= (paddle2.speed / 2);
+    ping.play();
   }
 
   if (this.x < 33 || this.x > 384) {
-    this.x > 400 ? score1++ : score2++;
+    this.x > 384 ? score1++ : score2++;
     // verify ball can get past AI paddle
-    console.log("Player: " + score1 + " Computer: " + score2);
-    this.x = 150;
-    this.y = 230;
+    console.log("X = " + this.x + "Player: " + score1 + " Computer: " + score2);
+    this.x = startX;
+    this.y = startY;
     this.xSpeed = 3;
     this.ySpeed = Math.floor((Math.random() * 6) + -4);
   }
@@ -199,6 +204,38 @@ var paintCanvas = function() {
   ctx.lineTo(767, 350);
   ctx.lineTo(419, 340);
   ctx.fill();
+  // Label
+  ctx.fillStyle = "blue";
+  ctx.font = "30px Arial";
+  ctx.fillText("SCORE CARD", 480, 190);
+  // Underline
+  ctx.setLineDash([]);
+  ctx.lineWidth = "1";
+  ctx.strokeStyle = "blue";
+  ctx.beginPath();
+  ctx.moveTo(480, 192);
+  ctx.lineTo(680, 192);
+  ctx.stroke();
+  // Score line divider
+  ctx.setLineDash([]);
+  ctx.lineWidth = "2";
+  ctx.strokeStyle = "blue";
+  ctx.beginPath();
+  ctx.moveTo(580, 192);
+  ctx.lineTo(580, 325);
+  ctx.stroke();
+  // Player 1 label & score
+  ctx.fillStyle = "orange";
+  ctx.font = "20px Comic Sans MS";
+  ctx.fillText("Avenger", 485, 210);
+  ctx.font = "50px Arial";
+  ctx.fillText(score1, 500, 270);
+  // Computer player label & score
+  ctx.fillStyle = "orange";
+  ctx.font = "20px Comic Sans MS";
+  ctx.fillText("J.A.R.V.I.S.", 585, 210);
+  ctx.font = "50px Arial";
+  ctx.fillText(score2, 625, 270);
   // Pong table
   ctx.beginPath();
   ctx.setLineDash([]);
