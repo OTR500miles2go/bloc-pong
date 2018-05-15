@@ -43,13 +43,27 @@ var update = function () {
 };
 
 function gameState() {
+  if (score1 === 11 || score2 === 11) {
+    if (score1 > score2) {
+      document.getElementById("playerWins").style.display = "block";
+    } else {
+      document.getElementById("gameState").style.display = "block";
+    }
+    document.getElementById("playAgain").style.display = "block";
+    ball.x = startX;
+    ball.y = startY;
+    ball.xSpeed = 0;
+    ball.ySpeed = 0;
+  }
   for (var key in keysDown) {
     var value = Number(key);
-    if (value == 13) { //Enter
+    if (value == 27) { //escape
+      location.reload();
+    } else if (value == 13) { //Enter
       ball.x = startX;
       ball.y = startY;
       ball.xSpeed = 4;
-      ball.ySpeed = Math.floor((Math.random() * 5) + -4);
+      ball.ySpeed = Math.floor((Math.random() * ((Math.random() * 5) + -4)));
     }
   }
 };
@@ -172,7 +186,7 @@ Ball.prototype.update = function (paddle1, paddle2) {
     this.x = startX;
     this.y = startY;
     this.xSpeed = 3;
-    this.ySpeed = Math.floor((Math.random() * 6) + -4);
+    this.ySpeed = Math.floor((Math.random() * ((Math.random() * 6) + -4)));
   }
 };
 

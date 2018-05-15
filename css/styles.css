@@ -9,6 +9,10 @@ body{
     display:none;
 }
 
+.hidden {
+    display: none;
+}
+
 canvas {
   margin-top: 10vh;
   margin-left: 15vw;
@@ -16,4 +20,39 @@ canvas {
   margin-bottom: 20vw;
   /*background: black;*/
   outline: 1px solid white;
+}
+
+#gameState {
+    position: center;
+    color: white;
+    font-size: 60px;
+    left: 275px;
+    top: 325px;
+    font-weight: 800;
+    background-color: black;
+    border-style: solid;
+    border-color: white;
+}
+#playerWins {
+    position: center;
+    color: white;
+    font-size: 60px;
+    left: 280px;
+    top: 325px;
+    font-weight: 800;
+    background-color: black;
+    border-style: solid;
+    border-color: white;
+}
+
+#playAgain {
+    position: center;
+    color: white;
+    font-size: 25px;
+    left: 280px;
+    top: 325px;
+    font-weight: 800;
+    background-color: black;
+    border-style: solid;
+    border-color: white;  
 }
